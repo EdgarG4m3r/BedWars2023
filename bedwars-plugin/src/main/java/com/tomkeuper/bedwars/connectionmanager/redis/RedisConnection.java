@@ -172,4 +172,7 @@ public class RedisConnection implements IRedisClient {
         dataPool.close();
     }
 
+    public JedisPool getDataPool() {
+        return dataPool;
+    }
 }

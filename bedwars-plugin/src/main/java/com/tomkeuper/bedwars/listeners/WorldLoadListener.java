@@ -20,8 +20,10 @@
 
 package com.tomkeuper.bedwars.listeners;
 
+import com.tomkeuper.bedwars.BedWars;
 import com.tomkeuper.bedwars.api.arena.IArena;
 import com.tomkeuper.bedwars.arena.Arena;
+import com.tomkeuper.bedwars.arena.ArenaManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
@@ -34,7 +36,7 @@ public class WorldLoadListener implements Listener {
     public void onLoad(WorldLoadEvent e) {
         for (IArena a : new LinkedList<>(Arena.getEnableQueue())) {
             if (a.getWorldName().equalsIgnoreCase(e.getWorld().getName())) {
-                a.init(e.getWorld());
+                BedWars.arenaManager.initializeArena(a, e.getWorld());
                 return;
             }
         }

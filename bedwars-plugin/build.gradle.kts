@@ -24,6 +24,8 @@ repositories {
     maven("https://repo.alessiodp.com/releases/") // slimjar
     maven("https://repo.rapture.pw/repository/maven-releases/") // Flow-NBT
 
+    maven("https://jitpack.io")
+
 }
 
 dependencies {
@@ -45,7 +47,8 @@ dependencies {
     api(projects.versionsupportV120R3)
     api(projects.versionsupportV120R4)
 
-    api("com.andrei1058.vipfeatures:vipfeatures-api:[1.0,)")
+    //api("com.andrei1058.vipfeatures:vipfeatures-api:[1.0,)")
+    api("com.gitlab.andrei1058:VipFeatures:1.3.0")
     api("com.zaxxer:HikariCP:5.0.1") {
         exclude("slf4-j-api", "slf4-j-api")
     }

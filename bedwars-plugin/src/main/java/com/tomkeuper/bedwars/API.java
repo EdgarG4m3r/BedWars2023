@@ -105,7 +105,7 @@ public class API implements com.tomkeuper.bedwars.api.BedWars {
         @SuppressWarnings("unused")
         @Override
         public boolean canAutoScale(String arenaName) {
-            return Arena.canAutoScale(arenaName);
+            return BedWars.arenaManager.canClone(arenaName);
         }
 
         @SuppressWarnings("unused")
@@ -225,7 +225,7 @@ public class API implements com.tomkeuper.bedwars.api.BedWars {
         @SuppressWarnings("unused")
         @Override
         public LinkedList<IArena> getEnableQueue() {
-            return Arena.getEnableQueue();
+            return BedWars.arenaManager.getEnableQueue();
         }
 
         @SuppressWarnings("unused")

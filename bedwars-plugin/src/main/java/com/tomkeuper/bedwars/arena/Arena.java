@@ -21,12 +21,12 @@
 package com.tomkeuper.bedwars.arena;
 
 import com.tomkeuper.bedwars.BedWars;
+import com.tomkeuper.bedwars.api.arena.ArenaTemplate;
 import com.tomkeuper.bedwars.api.arena.GameState;
 import com.tomkeuper.bedwars.api.arena.IArena;
 import com.tomkeuper.bedwars.api.arena.NextEvent;
 import com.tomkeuper.bedwars.api.arena.generator.GeneratorType;
 import com.tomkeuper.bedwars.api.arena.generator.IGenerator;
-import com.tomkeuper.bedwars.api.arena.shop.ShopHolo;
 import com.tomkeuper.bedwars.api.arena.team.ITeam;
 import com.tomkeuper.bedwars.api.arena.team.ITeamAssigner;
 import com.tomkeuper.bedwars.api.arena.team.TeamColor;
@@ -55,7 +55,7 @@ import com.tomkeuper.bedwars.api.tasks.StartingTask;
 import com.tomkeuper.bedwars.arena.tasks.*;
 import com.tomkeuper.bedwars.arena.team.BedWarsTeam;
 import com.tomkeuper.bedwars.arena.team.TeamAssigner;
-import com.tomkeuper.bedwars.configuration.ArenaConfig;
+import com.tomkeuper.bedwars.api.configuration.ArenaConfig;
 import com.tomkeuper.bedwars.configuration.Sounds;
 import com.tomkeuper.bedwars.levels.internal.InternalLevel;
 import com.tomkeuper.bedwars.levels.internal.PerMinuteTask;
@@ -104,26 +104,14 @@ import static com.tomkeuper.bedwars.arena.upgrades.BaseListener.isOnABase;
 @SuppressWarnings("WeakerAccess")
 public class Arena implements IArena {
 
-    private static final HashMap<String, IArena> arenaByName = new HashMap<>();
-    private static final HashMap<Player, IArena> arenaByPlayer = new HashMap<>();
-    private static final HashMap<String, IArena> arenaByIdentifier = new HashMap<>();
-    private static final LinkedList<IArena> arenas = new LinkedList<>();
-    private static int gamesBeforeRestart = config.getInt(ConfigPath.GENERAL_CONFIGURATION_BUNGEE_OPTION_GAMES_BEFORE_RESTART);
-    public static HashMap<UUID, Integer> afkCheck = new HashMap<>();
-    public static HashMap<UUID, Integer> magicMilk = new HashMap<>();
-
-
+    private String gameID;
+    private ArenaTemplate template;
     private List<Player> players = new ArrayList<>();
     private List<Player> spectators = new ArrayList<>();
     private List<Block> signs = new ArrayList<>();
     private GameState status = GameState.restarting;
-    private YamlConfiguration yml;
-    private ArenaConfig cm;
-    private int minPlayers = 2, maxPlayers = 10, maxInTeam = 1, islandRadius = 10;
     public int upgradeDiamondsCount = 0, upgradeEmeraldsCount = 0;
-    public boolean allowSpectate = true, allowMapBreak = false;
     private World world;
-    private String group = "Default", arenaName, worldName;
     private List<ITeam> teams = new ArrayList<>();
     private LinkedList<org.bukkit.util.Vector> placed = new LinkedList<>();
     private List<String> nextEvents = new ArrayList<>();
@@ -181,13 +169,16 @@ public class Arena implements IArena {
     private PerMinuteTask perMinuteTask;
 
     private MoneyPerMinuteTask moneyperMinuteTask;
-
-    private static final LinkedList<IArena> enableQueue = new LinkedList<>();
-
-    private Location respawnLocation, spectatorLocation, waitingLocation;
-    private int yKillHeight;
     private Instant startTime;
     private ITeamAssigner teamAssigner = new TeamAssigner();
+
+    public Arena(ArenaTemplate template, String gameId)
+    {
+        this.template = template;
+        this.gameID = gameId;
+        ArenaConfig arenaConfig = template.getCm();
+
+    }
 
     /**
      * Load an arena.
@@ -347,9 +338,6 @@ public class Arena implements IArena {
             }
         }
 
-        arenas.add(this);
-        arenaByName.put(getArenaName(), this);
-        arenaByIdentifier.put(worldName, this);
         world.getWorldBorder().setCenter(cm.getArenaLoc("waiting.Loc"));
         world.getWorldBorder().setSize(yml.getInt("worldBorder"));
 
@@ -2517,6 +2505,11 @@ public class Arena implements IArena {
     }
 
     @Override
+    public ArenaTemplate getTemplate() {
+        return template;
+    }
+
+    @Override
     public boolean isMapBreakable() {
         return allowMapBreak;
     }
@@ -2572,33 +2565,6 @@ public class Arena implements IArena {
         return respawnSessions.containsKey(player);
     }
 
-    // used for auto scale conditions
-    public static boolean canAutoScale(String arenaName) {
-        if (!autoscale) return true;
-
-        if (Arena.getArenas().isEmpty()) return true;
-
-        for (IArena ar : Arena.getEnableQueue()) {
-            if (ar.getArenaName().equalsIgnoreCase(arenaName)) return false;
-        }
-
-        if (Arena.getGamesBeforeRestart() != -1 && Arena.getArenas().size() >= Arena.getGamesBeforeRestart()) return false;
-
-        int activeClones = 0;
-        for (IArena ar : Arena.getArenas()) {
-            if (ar.getArenaName().equalsIgnoreCase(arenaName)) {
-                // clone this arena only if there aren't available arena of the same kind
-                if (ar.getStatus() == GameState.waiting || ar.getStatus() == GameState.starting) return false;
-            }
-            // count active clones
-            if (ar.getArenaName().equals(arenaName)){
-                activeClones++;
-            }
-        }
-
-        // check amount of active clones
-        return config.getInt(ConfigPath.GENERAL_CONFIGURATION_BUNGEE_OPTION_AUTO_SCALE_LIMIT) > activeClones;
-    }
 
     @Override
     public boolean equals(Object obj) {

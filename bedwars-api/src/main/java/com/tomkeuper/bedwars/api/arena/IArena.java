@@ -743,4 +743,6 @@ public interface IArena {
      * @return The team that owns the bed at the given location, or null if there is no bed or if the location is not in this arena's world.
      */
     @Nullable ITeam getBedsTeam(Location location);
+
+    ArenaTemplate getTemplate();
 }

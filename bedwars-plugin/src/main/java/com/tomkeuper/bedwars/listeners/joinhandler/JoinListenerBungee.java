@@ -20,6 +20,8 @@
 
 package com.tomkeuper.bedwars.listeners.joinhandler;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.tomkeuper.bedwars.BedWars;
 import com.tomkeuper.bedwars.api.arena.GameState;
 import com.tomkeuper.bedwars.api.arena.IArena;
@@ -38,9 +40,16 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import redis.clients.jedis.Jedis;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static com.tomkeuper.bedwars.api.language.Language.getMsg;
 

@@ -29,7 +29,7 @@ import com.tomkeuper.bedwars.api.server.ISetupSession;
 import com.tomkeuper.bedwars.api.server.ServerType;
 import com.tomkeuper.bedwars.api.server.SetupType;
 import com.tomkeuper.bedwars.commands.bedwars.MainCommand;
-import com.tomkeuper.bedwars.configuration.ArenaConfig;
+import com.tomkeuper.bedwars.api.configuration.ArenaConfig;
 import com.tomkeuper.bedwars.support.paper.PaperSupport;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.*;

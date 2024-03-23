@@ -21,6 +21,7 @@
 package com.tomkeuper.bedwars.maprestore.internal;
 
 import com.tomkeuper.bedwars.BedWars;
+import com.tomkeuper.bedwars.api.arena.ArenaTemplate;
 import com.tomkeuper.bedwars.api.arena.IArena;
 import com.tomkeuper.bedwars.api.configuration.ConfigPath;
 import com.tomkeuper.bedwars.api.server.ISetupSession;
@@ -109,8 +110,9 @@ public class InternalAdapter extends RestoreAdapter {
                         Arena.setGamesBeforeRestart(Arena.getGamesBeforeRestart() - 1);
                     }
                     Bukkit.unloadWorld(a.getWorldName(), false);
-                    if (Arena.canAutoScale(a.getArenaName())) {
-                        Bukkit.getScheduler().runTaskLater(plugin, () -> new Arena(a.getArenaName(), null), 80L);
+                    ArenaTemplate template = a.getTemplate();
+                    if (BedWars.arenaManager.canClone(template)) {
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> BedWars.arenaManager.spawnArena(template), 80L);
                     }
                 }
             } else {

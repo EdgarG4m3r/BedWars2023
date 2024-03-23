@@ -20,7 +20,10 @@
 
 package com.tomkeuper.bedwars.listeners;
 
+import com.tomkeuper.bedwars.BedWars;
+import com.tomkeuper.bedwars.api.arena.ArenaTemplate;
 import com.tomkeuper.bedwars.api.arena.GameState;
+import com.tomkeuper.bedwars.api.arena.IArena;
 import com.tomkeuper.bedwars.api.events.gameplay.GameStateChangeEvent;
 import com.tomkeuper.bedwars.arena.Arena;
 import org.bukkit.event.EventHandler;
@@ -30,10 +33,15 @@ public class AutoscaleListener implements Listener {
 
     @EventHandler
     public void onPlaying(GameStateChangeEvent e) {
-        if (e.getNewState() == GameState.playing && Arena.canAutoScale(e.getArena().getArenaName())) {
-            if (Arena.getGamesBeforeRestart() > 1){
-                new Arena(e.getArena().getArenaName(), null);
-            }
+        if (e.getNewState() != GameState.playing) {
+            return;
+        }
+
+        IArena arena = e.getArena();
+        ArenaTemplate template = arena.getTemplate();
+
+        if (BedWars.arenaManager.canClone(template)) {
+            BedWars.arenaManager.spawnArena(template);
         }
     }
 }

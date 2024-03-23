@@ -27,7 +27,7 @@ import com.tomkeuper.bedwars.api.configuration.ConfigPath;
 import com.tomkeuper.bedwars.api.server.SetupType;
 import com.tomkeuper.bedwars.arena.Misc;
 import com.tomkeuper.bedwars.arena.SetupSession;
-import com.tomkeuper.bedwars.configuration.ArenaConfig;
+import com.tomkeuper.bedwars.api.configuration.ArenaConfig;
 import com.tomkeuper.bedwars.configuration.Permissions;
 import com.tomkeuper.bedwars.configuration.Sounds;
 import net.md_5.bungee.api.chat.ClickEvent;
